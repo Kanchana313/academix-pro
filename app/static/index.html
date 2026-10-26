@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Academix Pro | Student Database Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Top Navigation Header -->
+    <header class="top-header">
+      <div class="brand">
+        <div class="logo-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>Academix <span>Pro</span></h1>
+          <p class="subtitle">EWB Internship Project • FastAPI & SQLite</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Dark / Light Mode Switcher -->
+        <button id="btn-theme-toggle" class="btn-theme-toggle" aria-label="Toggle Theme" title="Toggle Light/Dark Theme">
+          <svg id="theme-icon-sun" class="hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg id="theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+
+        <!-- Export Dropdown -->
+        <div class="dropdown-wrapper">
+          <button id="btn-export-dropdown" class="btn-secondary" title="Export Student Records">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>Export</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          <div id="export-menu" class="dropdown-menu hidden">
+            <button id="btn-export-csv" class="dropdown-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+              </svg>
+              <span>Download CSV</span>
+            </button>
+            <button id="btn-export-json" class="dropdown-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="16 18 22 12 16 6"></polyline>
+                <polyline points="8 6 2 12 8 18"></polyline>
+              </svg>
+              <span>Download JSON</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- AI Assistant Trigger -->
+        <button id="btn-open-ai" class="btn-ai-trigger" title="Ask Natural Language Questions with Ollama AI">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"></path>
+            <path d="M12 6v6l4 2"></path>
+          </svg>
+          <span>Ask AI Assistant</span>
+        </button>
+
+        <!-- Add Student Button -->
+        <button id="btn-add-student" class="btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          <span>Add Student</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <!-- Animated Stats Overview Cards -->
+      <section class="stats-grid">
+        <div class="stat-card" data-card="total">
+          <div class="stat-icon icon-blue">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Total Enrolled</span>
+            <h2 id="stat-total-students" class="stat-value">0</h2>
+          </div>
+        </div>
+
+        <div class="stat-card" data-card="courses">
+          <div class="stat-icon icon-purple">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Active Courses</span>
+            <h2 id="stat-total-courses" class="stat-value">0</h2>
+          </div>
+        </div>
+
+        <div class="stat-card" data-card="email">
+          <div class="stat-icon icon-emerald">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+            </svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Verified Emails</span>
+            <h2 id="stat-with-email" class="stat-value">0</h2>
+          </div>
+        </div>
+
+        <div class="stat-card" data-card="phone">
+          <div class="stat-icon icon-amber">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+            </svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Phone Contacts</span>
+            <h2 id="stat-with-phone" class="stat-value">0</h2>
+          </div>
+        </div>
+      </section>
+
+      <!-- Department Distribution Analytics Panel -->
+      <section class="analytics-card" id="analytics-panel">
+        <div class="analytics-header">
+          <div class="analytics-title-group">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="20" x2="18" y2="10"></line>
+              <line x1="12" y1="20" x2="12" y2="4"></line>
+              <line x1="6" y1="20" x2="6" y2="14"></line>
+            </svg>
+            <h3>Department Breakdown</h3>
+            <span class="analytics-badge">Interactive</span>
+          </div>
+          <span class="analytics-hint">Click any course bar to filter records instantly</span>
+        </div>
+        <div class="course-bars-grid" id="course-bars-container">
+          <!-- Populated by JavaScript -->
+        </div>
+      </section>
+
+      <!-- Search, Filtering, and Controls -->
+      <section class="controls-panel">
+        <div class="search-box">
+          <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="filter-search" placeholder="Search by name, student ID, email, or phone...">
+          <button id="btn-clear-search" class="btn-clear-search hidden" title="Clear search" aria-label="Clear search">&times;</button>
+        </div>
+
+        <div class="filters-group">
+          <select id="filter-course" class="select-control" title="Filter by Course">
+            <option value="">All Courses</option>
+          </select>
+
+          <input type="date" id="filter-born-after" class="date-control" title="Filter born after date">
+
+          <button id="btn-reset-filters" class="btn-ghost" title="Reset all active filters">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+              <path d="M3 3v5h5"></path>
+            </svg>
+            <span>Reset</span>
+          </button>
+
+          <button id="btn-refresh" class="btn-ghost" title="Refresh records from SQLite">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+            </svg>
+            <span>Refresh</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Quick Interactive Course Pills -->
+      <section class="course-pills-bar">
+        <span class="pills-title">Quick Filter:</span>
+        <div class="pills-scroll" id="course-pills">
+          <!-- Populated by JavaScript -->
+        </div>
+      </section>
+
+      <!-- Students Table -->
+      <section class="table-container">
+        <div class="table-header-info">
+          <div class="table-title-group">
+            <h3>Student Records</h3>
+            <span id="records-counter" class="counter-badge">0</span>
+            <span id="filter-status-tag" class="filter-status-badge hidden">Filtered</span>
+          </div>
+          <div class="table-tools">
+            <span class="hint-text">Click column headers to sort</span>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="students-table">
+            <thead>
+              <tr>
+                <th class="sortable-col" data-sort="student_id" title="Click to sort by Student ID">
+                  <div class="th-content">
+                    <span>Student ID</span>
+                    <span class="sort-icon" id="sort-student_id">↕</span>
+                  </div>
+                </th>
+                <th class="sortable-col" data-sort="name" title="Click to sort by Full Name">
+                  <div class="th-content">
+                    <span>Full Name</span>
+                    <span class="sort-icon" id="sort-name">↕</span>
+                  </div>
+                </th>
+                <th class="sortable-col" data-sort="date_of_birth" title="Click to sort by Date of Birth">
+                  <div class="th-content">
+                    <span>Date of Birth</span>
+                    <span class="sort-icon" id="sort-date_of_birth">↕</span>
+                  </div>
+                </th>
+                <th class="sortable-col" data-sort="course" title="Click to sort by Course">
+                  <div class="th-content">
+                    <span>Course</span>
+                    <span class="sort-icon" id="sort-course">↕</span>
+                  </div>
+                </th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th class="sortable-col" data-sort="enrollment_date" title="Click to sort by Enrollment Date">
+                  <div class="th-content">
+                    <span>Enrollment</span>
+                    <span class="sort-icon" id="sort-enrollment_date">↕</span>
+                  </div>
+                </th>
+                <th class="actions-col">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="students-table-body">
+              <tr>
+                <td colspan="8" class="empty-state">
+                  <div class="loader-spinner"></div>
+                  <p>Loading students records...</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <!-- Modal: Add / Edit Student -->
+    <div id="student-modal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2 id="modal-title">Add New Student</h2>
+          <button id="btn-close-modal" class="btn-icon" aria-label="Close modal">&times;</button>
+        </div>
+
+        <form id="student-form">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="inp-student-id">Student ID <span class="required">*</span></label>
+              <input type="text" id="inp-student-id" required placeholder="e.g. STU1001" autocomplete="off">
+              <small class="field-hint">Unique identifier for the student.</small>
+            </div>
+
+            <div class="form-group">
+              <label for="inp-name">Full Name <span class="required">*</span></label>
+              <input type="text" id="inp-name" required placeholder="e.g. Priya Sharma" autocomplete="off">
+            </div>
+
+            <div class="form-group">
+              <label for="inp-dob">Date of Birth <span class="required">*</span></label>
+              <input type="date" id="inp-dob" required>
+            </div>
+
+            <div class="form-group">
+              <label for="inp-course">Course / Department</label>
+              <input type="text" id="inp-course" placeholder="e.g. Computer Science" list="course-suggestions">
+              <datalist id="course-suggestions">
+                <option value="Computer Science">
+                <option value="Information Technology">
+                <option value="Data Science">
+                <option value="Artificial Intelligence">
+                <option value="Cyber Security">
+                <option value="Electronics & Communication">
+                <option value="Mechanical Engineering">
+              </datalist>
+            </div>
+
+            <div class="form-group">
+              <label for="inp-email">Email Address <span class="contact-req">(Email or Phone required)</span></label>
+              <input type="email" id="inp-email" placeholder="e.g. priya.sharma@example.com">
+            </div>
+
+            <div class="form-group">
+              <label for="inp-phone">Phone Number <span class="contact-req">(Email or Phone required)</span></label>
+              <input type="tel" id="inp-phone" placeholder="e.g. +91 9876543210">
+            </div>
+
+            <div class="form-group">
+              <label for="inp-enrollment">Enrollment Date</label>
+              <input type="date" id="inp-enrollment">
+            </div>
+
+            <div class="form-group full-width">
+              <label for="inp-address">Address</label>
+              <input type="text" id="inp-address" placeholder="e.g. 14 MG Road, Bengaluru, Karnataka">
+            </div>
+          </div>
+
+          <div id="modal-error" class="form-error hidden"></div>
+
+          <div class="modal-footer">
+            <button type="button" id="btn-cancel-modal" class="btn-secondary">Cancel</button>
+            <button type="submit" id="btn-save-student" class="btn-primary">
+              <span id="btn-save-text">Save Student</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal: View Student Details -->
+    <div id="view-modal" class="modal-overlay hidden">
+      <div class="modal-card modal-profile">
+        <div class="modal-header">
+          <h2>Student Profile</h2>
+          <button id="btn-close-view" class="btn-icon" aria-label="Close modal">&times;</button>
+        </div>
+        <div class="profile-content" id="profile-detail-body">
+          <!-- Populated by JavaScript -->
+        </div>
+        <div class="modal-footer profile-footer" id="profile-footer-actions">
+          <!-- Populated with Quick Edit / Delete / Close by JavaScript -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Custom Delete Confirmation -->
+    <div id="delete-modal" class="modal-overlay hidden">
+      <div class="modal-card modal-confirm">
+        <div class="confirm-icon-danger">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+        </div>
+        <div class="confirm-content">
+          <h3 id="delete-modal-title">Delete Student Record?</h3>
+          <p id="delete-modal-desc">Are you sure you want to delete this student record? This action will permanently remove the record from SQLite.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="btn-cancel-delete" class="btn-secondary">Cancel</button>
+          <button type="button" id="btn-confirm-delete" class="btn-danger">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+            <span>Delete Permanently</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: AI Assistant Query (Ollama Extension) -->
+    <div id="ai-modal" class="modal-overlay hidden">
+      <div class="modal-card modal-large">
+        <div class="modal-header">
+          <div class="modal-title-with-badge">
+            <h2>AI Assistant (Ollama Extension)</h2>
+            <span id="ollama-status-badge" class="badge-status badge-offline">Checking status...</span>
+          </div>
+          <button id="btn-close-ai" class="btn-icon" aria-label="Close modal">&times;</button>
+        </div>
+
+        <div class="ai-body">
+          <div class="ai-intro-note">
+            <p>Ask natural-language questions about student records stored in SQLite. The backend retrieves the verified data safely and passes it to the AI model as factual context.</p>
+            <div class="quick-chips">
+              <button class="chip-query" data-q="How many students are there in total?">"How many students are there?"</button>
+              <button class="chip-query" data-q="How many students are enrolled in Computer Science?">"Students in Computer Science"</button>
+              <button class="chip-query" data-q="List students born after 2003.">"Students born after 2003"</button>
+              <button class="chip-query" data-q="Show the distribution of courses.">"Course distribution"</button>
+            </div>
+          </div>
+
+          <div class="ai-input-bar">
+            <input type="text" id="ai-query-input" placeholder="e.g. How many students are there? or List students born after 2005..." autocomplete="off">
+            <button id="btn-submit-ai" class="btn-primary">
+              <span>Ask AI</span>
+            </button>
+          </div>
+
+          <div id="ai-loader" class="ai-loader hidden">
+            <div class="typing-indicator">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <p>Querying verified database records & generating grounded response...</p>
+          </div>
+
+          <div id="ai-result-panel" class="ai-result hidden">
+            <div class="ai-result-header">
+              <span class="source-tag" id="ai-source-tag">Source: Ollama</span>
+              <span class="records-tag" id="ai-records-tag">0 records referenced</span>
+              <button id="btn-copy-ai-answer" class="btn-copy-answer" title="Copy answer to clipboard">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span>Copy</span>
+              </button>
+            </div>
+            <div class="ai-answer-box" id="ai-answer-text"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast-container" class="toast-container"></div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

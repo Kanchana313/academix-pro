@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: academix-pro
+    runtime: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: APP_NAME
+        value: "Academix Pro - Student Management API"
+      - key: APP_VERSION
+        value: "1.0.0"
+      - key: DEBUG
+        value: "False"
+      - key: DATABASE_URL
+        value: "sqlite:///./students.db"
+      - key: OLLAMA_BASE_URL
+        value: "http://localhost:11434"
+      - key: OLLAMA_MODEL
+        value: "llama3.2:1b"
+      - key: OLLAMA_TIMEOUT_SECONDS
+        value: "30.0"
+    plan: free
